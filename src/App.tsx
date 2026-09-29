@@ -30,7 +30,19 @@ export default function App() {
   const [channels, setChannels] = useState<WhatsAppChannel[]>(() => {
     try {
       const saved = localStorage.getItem('tulum_unido_banner_channels_v2');
-      return saved ? JSON.parse(saved) : INITIAL_CHANNELS;
+      if (saved) {
+        const parsed: WhatsAppChannel[] = JSON.parse(saved);
+        return parsed.map((ch) => {
+          if (ch.id === 'chat-general' && (!ch.whatsappInviteUrl || ch.whatsappInviteUrl.includes('invite/tulum-chat-general'))) {
+            return { ...ch, whatsappInviteUrl: 'https://chat.whatsapp.com/Lrpr6xp9XnO1jsf4KjEDTO?s=cl&p=i&mlu=4' };
+          }
+          if (ch.id === 'vigilancia-ciudadana' && (!ch.whatsappInviteUrl || ch.whatsappInviteUrl.includes('invite/tulum-vigilancia'))) {
+            return { ...ch, whatsappInviteUrl: 'https://chat.whatsapp.com/LhR2DHWN8lm6TQttkqCxCX?s=cl&p=a&ilr=4' };
+          }
+          return ch;
+        });
+      }
+      return INITIAL_CHANNELS;
     } catch {
       return INITIAL_CHANNELS;
     }
@@ -39,7 +51,18 @@ export default function App() {
   const [settings, setSettings] = useState<CommunitySettings>(() => {
     try {
       const saved = localStorage.getItem('tulum_unido_banner_settings_v2');
-      return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        delete parsed.customLogoUrl;
+        if (!parsed.instagramUrl || parsed.instagramUrl.includes('instagram.com/tulumunido')) {
+          parsed.instagramUrl = INITIAL_SETTINGS.instagramUrl;
+        }
+        if (!parsed.facebookUrl || parsed.facebookUrl.includes('facebook.com/tulumunido')) {
+          parsed.facebookUrl = INITIAL_SETTINGS.facebookUrl;
+        }
+        return { ...INITIAL_SETTINGS, ...parsed };
+      }
+      return INITIAL_SETTINGS;
     } catch {
       return INITIAL_SETTINGS;
     }
@@ -82,20 +105,6 @@ export default function App() {
     localStorage.removeItem('tulum_unido_banner_channels_v2');
     localStorage.removeItem('tulum_unido_banner_settings_v2');
     showToast(lang === 'es' ? 'Restablecido al directorio oficial' : 'Reset to official directory defaults');
-  };
-
-  const handleUploadLogo = (dataUrl: string) => {
-    const updatedSettings = { ...settings, customLogoUrl: dataUrl };
-    setSettings(updatedSettings);
-    localStorage.setItem('tulum_unido_banner_settings_v2', JSON.stringify(updatedSettings));
-    showToast(lang === 'es' ? '¡Logo oficial actualizado!' : 'Official logo updated!');
-  };
-
-  const handleResetLogo = () => {
-    const updatedSettings = { ...settings, customLogoUrl: undefined };
-    setSettings(updatedSettings);
-    localStorage.setItem('tulum_unido_banner_settings_v2', JSON.stringify(updatedSettings));
-    showToast(lang === 'es' ? 'Logo restablecido' : 'Logo reset to default');
   };
 
   // Click on WhatsApp group
@@ -161,7 +170,7 @@ export default function App() {
       {/* Desktop Header Bar */}
       <header className="w-full hidden md:flex items-center justify-between px-6 py-2.5 bg-slate-950/70 backdrop-blur-md border-b border-white/10 text-xs text-slate-300 z-20">
         <div className="flex items-center gap-2">
-          <TulumUnidoLogo variant="emblem" className="w-7 h-7" customLogoUrl={settings.customLogoUrl} />
+          <TulumUnidoLogo variant="emblem" className="w-7 h-7" />
           <span className="font-bold text-white tracking-wide">Tulum Unido</span>
           <span className="text-slate-400">· Ciudadanos reunidos por un mejor Tulum</span>
         </div>
@@ -252,12 +261,7 @@ export default function App() {
 
           {/* Banner Logo Section */}
           <div className="pt-3 pb-2 px-6 text-center">
-            <TulumUnidoLogo
-              variant="banner-header"
-              customLogoUrl={settings.customLogoUrl}
-              onUploadLogo={handleUploadLogo}
-              onResetLogo={handleResetLogo}
-            />
+            <TulumUnidoLogo variant="banner-header" />
           </div>
 
           {/* Citizen Community Definition & Call to Action (Replacing QR code) */}
@@ -310,7 +314,7 @@ export default function App() {
               <div className="flex items-center justify-center gap-3 w-full max-w-xs">
                 {/* Instagram Button */}
                 <a
-                  href={settings.instagramUrl || 'https://instagram.com/tulumunido'}
+                  href={settings.instagramUrl || 'https://www.instagram.com/tulum.unido/'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 min-h-[46px] flex items-center justify-center gap-2.5 px-4 py-2 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow transition-all duration-150 active:scale-[0.98] group"
@@ -325,13 +329,13 @@ export default function App() {
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="text-xs font-bold text-slate-800 leading-none">Instagram</span>
-                    <span className="text-[10px] text-slate-400 font-medium">@tulumunido</span>
+                    <span className="text-[10px] text-slate-400 font-medium">@tulum.unido</span>
                   </div>
                 </a>
 
                 {/* Facebook Button */}
                 <a
-                  href={settings.facebookUrl || 'https://facebook.com/tulumunido'}
+                  href={settings.facebookUrl || 'https://www.facebook.com/tulumunidomx?locale=es_LA'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 min-h-[46px] flex items-center justify-center gap-2.5 px-4 py-2 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow transition-all duration-150 active:scale-[0.98] group"
@@ -344,7 +348,7 @@ export default function App() {
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="text-xs font-bold text-slate-800 leading-none">Facebook</span>
-                    <span className="text-[10px] text-slate-400 font-medium">Tulum Unido</span>
+                    <span className="text-[10px] text-slate-400 font-medium">@tulumunidomx</span>
                   </div>
                 </a>
               </div>

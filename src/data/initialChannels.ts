@@ -4,11 +4,11 @@ export const INITIAL_SETTINGS: CommunitySettings = {
   communityName: 'Tulum Unido',
   sloganTop: 'JUNTOS POR UN MEJOR TULUM',
   callToAction: 'ÚNETE Y ELIGE EL GRUPO QUE TE INTERESA',
-  mainCommunityWhatsappUrl: 'https://chat.whatsapp.com/invite/tulum-unido-central',
+  mainCommunityWhatsappUrl: 'https://chat.whatsapp.com/Lrpr6xp9XnO1jsf4KjEDTO?s=cl&p=i&mlu=4',
   contactAdminWhatsapp: '+529841234567',
   emergencyPhone: '911',
-  instagramUrl: 'https://instagram.com/tulumunido',
-  facebookUrl: 'https://facebook.com/tulumunido',
+  instagramUrl: 'https://www.instagram.com/tulum.unido/',
+  facebookUrl: 'https://www.facebook.com/tulumunidomx?locale=es_LA',
 };
 
 export const INITIAL_CHANNELS: WhatsAppChannel[] = [
@@ -25,7 +25,7 @@ export const INITIAL_CHANNELS: WhatsAppChannel[] = [
     iconBgColor: '#e8a238', // Golden yellow circle
     pillBgColor: '#fff9ed', // Cream yellow pill
     borderColor: '#fde5be',
-    whatsappInviteUrl: 'https://chat.whatsapp.com/invite/tulum-chat-general',
+    whatsappInviteUrl: 'https://chat.whatsapp.com/Lrpr6xp9XnO1jsf4KjEDTO?s=cl&p=i&mlu=4',
     membersCount: 1420,
     badge: 'Comunidad Abierta',
     coordinator: 'Equipo Moderador',
@@ -48,7 +48,7 @@ export const INITIAL_CHANNELS: WhatsAppChannel[] = [
     iconBgColor: '#14385c', // Dark navy blue circle
     pillBgColor: '#eef5fc', // Soft ice blue pill
     borderColor: '#d0e3f7',
-    whatsappInviteUrl: 'https://chat.whatsapp.com/invite/tulum-vigilancia',
+    whatsappInviteUrl: 'https://chat.whatsapp.com/LhR2DHWN8lm6TQttkqCxCX?s=cl&p=a&ilr=4',
     membersCount: 1180,
     badge: 'Seguridad & Auxilio',
     coordinator: 'Comité de Seguridad Vecinal',
