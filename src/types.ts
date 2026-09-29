@@ -1,8 +1,10 @@
 export type ChannelCategory = 
   | 'todos'
-  | 'vigilancia'
-  | 'brigadas'
   | 'chat_general'
+  | 'vigilancia'
+  | 'voluntarios'
+  | 'tulum_united'
+  | 'economia_circular'
   | 'comisiones';
 
 export interface WhatsAppChannel {
@@ -14,9 +16,10 @@ export interface WhatsAppChannel {
     en: string;
   };
   category: ChannelCategory;
-  color: string;
-  textColor?: string;
-  icon: 'Shield' | 'Users' | 'MessageCircle' | 'Settings';
+  iconBgColor: string;
+  pillBgColor: string;
+  borderColor: string;
+  icon: 'MessageCircle' | 'Shield' | 'Users' | 'Globe' | 'Recycle' | 'Settings';
   whatsappInviteUrl: string;
   membersCount?: number;
   badge?: string;
@@ -27,9 +30,11 @@ export interface WhatsAppChannel {
 export interface CommunitySettings {
   communityName: string;
   sloganTop: string;
-  sloganBottom: string;
   callToAction: string;
   mainCommunityWhatsappUrl: string;
   contactAdminWhatsapp: string;
   emergencyPhone: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  customLogoUrl?: string;
 }

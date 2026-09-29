@@ -26,10 +26,10 @@ import { Toast } from './components/Toast';
 export default function App() {
   const [lang, setLang] = useState<'es' | 'en'>('es');
 
-  // Channels state matching the 4 groups from the feather banner
+  // Channels state matching the 6 groups from the updated graphic
   const [channels, setChannels] = useState<WhatsAppChannel[]>(() => {
     try {
-      const saved = localStorage.getItem('tulum_unido_banner_channels');
+      const saved = localStorage.getItem('tulum_unido_banner_channels_v2');
       return saved ? JSON.parse(saved) : INITIAL_CHANNELS;
     } catch {
       return INITIAL_CHANNELS;
@@ -38,7 +38,7 @@ export default function App() {
 
   const [settings, setSettings] = useState<CommunitySettings>(() => {
     try {
-      const saved = localStorage.getItem('tulum_unido_banner_settings');
+      const saved = localStorage.getItem('tulum_unido_banner_settings_v2');
       return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
     } catch {
       return INITIAL_SETTINGS;
@@ -66,22 +66,36 @@ export default function App() {
   // Save changes
   const handleSaveChannels = (updated: WhatsAppChannel[]) => {
     setChannels(updated);
-    localStorage.setItem('tulum_unido_banner_channels', JSON.stringify(updated));
+    localStorage.setItem('tulum_unido_banner_channels_v2', JSON.stringify(updated));
     showToast(lang === 'es' ? 'Enlaces actualizados' : 'Links updated');
   };
 
   const handleSaveSettings = (updated: CommunitySettings) => {
     setSettings(updated);
-    localStorage.setItem('tulum_unido_banner_settings', JSON.stringify(updated));
+    localStorage.setItem('tulum_unido_banner_settings_v2', JSON.stringify(updated));
     showToast(lang === 'es' ? 'Ajustes guardados' : 'Settings saved');
   };
 
   const handleResetDefaults = () => {
     setChannels(INITIAL_CHANNELS);
     setSettings(INITIAL_SETTINGS);
-    localStorage.removeItem('tulum_unido_banner_channels');
-    localStorage.removeItem('tulum_unido_banner_settings');
-    showToast(lang === 'es' ? 'Restablecido al banderín oficial' : 'Reset to official banner defaults');
+    localStorage.removeItem('tulum_unido_banner_channels_v2');
+    localStorage.removeItem('tulum_unido_banner_settings_v2');
+    showToast(lang === 'es' ? 'Restablecido al directorio oficial' : 'Reset to official directory defaults');
+  };
+
+  const handleUploadLogo = (dataUrl: string) => {
+    const updatedSettings = { ...settings, customLogoUrl: dataUrl };
+    setSettings(updatedSettings);
+    localStorage.setItem('tulum_unido_banner_settings_v2', JSON.stringify(updatedSettings));
+    showToast(lang === 'es' ? '¡Logo oficial actualizado!' : 'Official logo updated!');
+  };
+
+  const handleResetLogo = () => {
+    const updatedSettings = { ...settings, customLogoUrl: undefined };
+    setSettings(updatedSettings);
+    localStorage.setItem('tulum_unido_banner_settings_v2', JSON.stringify(updatedSettings));
+    showToast(lang === 'es' ? 'Logo restablecido' : 'Logo reset to default');
   };
 
   // Click on WhatsApp group
@@ -93,7 +107,7 @@ export default function App() {
         particleCount: 45,
         spread: 55,
         origin: { y: 0.8 },
-        colors: [channel.color, '#25D366', '#ffffff'],
+        colors: [channel.iconBgColor || '#0c2d48', '#25D366', '#ffffff'],
       });
     } catch {
       // safe
@@ -147,7 +161,7 @@ export default function App() {
       {/* Desktop Header Bar */}
       <header className="w-full hidden md:flex items-center justify-between px-6 py-2.5 bg-slate-950/70 backdrop-blur-md border-b border-white/10 text-xs text-slate-300 z-20">
         <div className="flex items-center gap-2">
-          <TulumUnidoLogo variant="emblem" className="w-7 h-7" />
+          <TulumUnidoLogo variant="emblem" className="w-7 h-7" customLogoUrl={settings.customLogoUrl} />
           <span className="font-bold text-white tracking-wide">Tulum Unido</span>
           <span className="text-slate-400">· Ciudadanos reunidos por un mejor Tulum</span>
         </div>
@@ -238,7 +252,12 @@ export default function App() {
 
           {/* Banner Logo Section */}
           <div className="pt-3 pb-2 px-6 text-center">
-            <TulumUnidoLogo variant="banner-header" />
+            <TulumUnidoLogo
+              variant="banner-header"
+              customLogoUrl={settings.customLogoUrl}
+              onUploadLogo={handleUploadLogo}
+              onResetLogo={handleResetLogo}
+            />
           </div>
 
           {/* Citizen Community Definition & Call to Action (Replacing QR code) */}
@@ -279,78 +298,56 @@ export default function App() {
             ))}
           </div>
 
-          {/* Banner Bottom Artwork: Mayan Ruins of Tulum, Palms, Waves & Slogan */}
-          <div className="relative mt-auto pt-6 pb-6 px-6 text-center overflow-hidden bg-gradient-to-t from-[#093527]/10 via-transparent to-transparent">
-            
-            {/* Illustrated Tulum Ruin & Palms Silhouette */}
-            <div className="w-full flex justify-center mb-3 opacity-90">
-              <svg
-                viewBox="0 0 320 80"
-                className="w-full max-w-xs h-16 drop-shadow-sm select-none"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Sun behind ruins */}
-                <circle cx="215" cy="42" r="20" fill="#a7f3d0" opacity="0.35" />
+          {/* Footer Section with Social Media & Links */}
+          <div className="relative mt-auto pt-2 pb-6 px-6 text-center">
 
-                {/* Tulum El Castillo Mayan Ruin Silhouette */}
-                <path
-                  d="M170 65 L 175 48 L 180 48 L 182 40 L 205 40 L 208 48 L 222 48 L 228 65 Z"
-                  fill="#0e3b2e"
-                />
-                <rect x="189" y="44" width="7" height="9" rx="0.5" fill="#ffffff" opacity="0.8" />
-                <path
-                  d="M150 70 C 160 62, 175 60, 240 60 C 255 60, 270 65, 280 72 Z"
-                  fill="#0e3b2e"
-                  opacity="0.9"
-                />
-
-                {/* Palm Trees */}
-                <path d="M255 65 C 256 50, 258 35, 260 25" stroke="#0e3b2e" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M260 25 C 252 20, 246 22, 244 26" stroke="#0e3b2e" strokeWidth="2" strokeLinecap="round" />
-                <path d="M260 25 C 255 16, 249 16, 247 18" stroke="#0e3b2e" strokeWidth="2" strokeLinecap="round" />
-                <path d="M260 25 C 265 14, 271 16, 273 18" stroke="#0e3b2e" strokeWidth="2" strokeLinecap="round" />
-                <path d="M260 25 C 268 20, 274 22, 276 26" stroke="#0e3b2e" strokeWidth="2" strokeLinecap="round" />
-
-                <path d="M272 68 C 274 55, 276 45, 278 36" stroke="#0e3b2e" strokeWidth="2" strokeLinecap="round" />
-                <path d="M278 36 C 272 30, 267 32, 265 35" stroke="#0e3b2e" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M278 36 C 284 30, 289 32, 291 35" stroke="#0e3b2e" strokeWidth="1.8" strokeLinecap="round" />
-
-                {/* Left Palm Leaves */}
-                <path
-                  d="M10 68 C 25 55, 45 52, 65 66 C 45 64, 30 68, 10 75 Z"
-                  fill="#0e3b2e"
-                  opacity="0.8"
-                />
-                <path
-                  d="M20 74 C 35 60, 58 58, 80 72 C 60 70, 42 74, 20 80 Z"
-                  fill="#0e3b2e"
-                />
-
-                {/* Wave Curves under the ruins */}
-                <path
-                  d="M0 72 C 50 64, 90 76, 140 70 C 190 64, 240 74, 320 68 L 320 80 L 0 80 Z"
-                  fill="#008fa2"
-                  opacity="0.85"
-                />
-                <path
-                  d="M0 76 C 60 70, 110 80, 170 74 C 230 68, 280 78, 320 74 L 320 80 L 0 80 Z"
-                  fill="#0a4d3c"
-                />
-              </svg>
-            </div>
-
-            {/* Bottom Slogan from the banner */}
-            <div className="flex flex-col items-center">
-              <span className="text-xs sm:text-sm font-black tracking-widest text-[#0a4d3c] uppercase font-['Cabinet_Grotesk',sans-serif]">
-                GENTE DE AQUÍ
-              </span>
-              <span className="text-[11px] sm:text-xs font-bold tracking-wider text-[#0a4d3c] uppercase mt-0.5">
-                HACIENDO UN MEJOR TULUM
+            {/* Social Links: Instagram & Facebook */}
+            <div className="flex flex-col items-center mt-2">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#032b4b]/80 mb-2.5">
+                {lang === 'es' ? 'Nuestras Redes Sociales' : 'Follow Our Social Media'}
               </span>
 
-              {/* Golden accent bar */}
-              <div className="w-16 h-1 bg-[#df981c] rounded-full mt-2" />
+              <div className="flex items-center justify-center gap-3 w-full max-w-xs">
+                {/* Instagram Button */}
+                <a
+                  href={settings.instagramUrl || 'https://instagram.com/tulumunido'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-h-[46px] flex items-center justify-center gap-2.5 px-4 py-2 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow transition-all duration-150 active:scale-[0.98] group"
+                >
+                  {/* Official Instagram Gradient Logo */}
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] flex items-center justify-center p-1 text-white shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-bold text-slate-800 leading-none">Instagram</span>
+                    <span className="text-[10px] text-slate-400 font-medium">@tulumunido</span>
+                  </div>
+                </a>
+
+                {/* Facebook Button */}
+                <a
+                  href={settings.facebookUrl || 'https://facebook.com/tulumunido'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-h-[46px] flex items-center justify-center gap-2.5 px-4 py-2 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow transition-all duration-150 active:scale-[0.98] group"
+                >
+                  {/* Official Facebook Blue Logo */}
+                  <div className="w-6 h-6 rounded-full bg-[#1877F2] flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 translate-y-0.5">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-bold text-slate-800 leading-none">Facebook</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Tulum Unido</span>
+                  </div>
+                </a>
+              </div>
             </div>
 
             {/* Admin quick access */}

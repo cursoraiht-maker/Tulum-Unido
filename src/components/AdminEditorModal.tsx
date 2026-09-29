@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   X, 
   Plus, 
@@ -9,7 +9,9 @@ import {
   Check, 
   Link, 
   Settings,
-  MessageCircle
+  MessageCircle,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { WhatsAppChannel, CommunitySettings } from '../types';
 
@@ -109,7 +111,7 @@ export const AdminEditorModal: React.FC<AdminEditorModalProps> = ({
                   <div className="flex items-center gap-2">
                     <span 
                       className="w-3 h-3 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: channel.color }}
+                      style={{ backgroundColor: channel.iconBgColor || '#0c2d48' }}
                     />
                     <span className="font-black text-xs text-slate-900 tracking-wide uppercase">
                       {channel.title}
@@ -144,6 +146,108 @@ export const AdminEditorModal: React.FC<AdminEditorModalProps> = ({
               onChange={(e) => setLocalSettings({ ...localSettings, mainCommunityWhatsappUrl: e.target.value })}
               className="w-full px-3 py-2 text-xs font-mono bg-white border border-emerald-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
+          </div>
+
+          {/* Official Logo File Management */}
+          <div className="p-3.5 rounded-2xl border border-slate-200 bg-white space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wide">
+                {lang === 'es' ? 'Imagen Oficial del Logo' : 'Official Logo Image'}
+              </label>
+              {localSettings.customLogoUrl && (
+                <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  {lang === 'es' ? 'Personalizado activo' : 'Custom active'}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0 p-1">
+                <img
+                  src={localSettings.customLogoUrl || '/logotu.svg'}
+                  alt="Logo Preview"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              <div className="flex-1 space-y-1.5">
+                <input
+                  type="file"
+                  id="logo-file-input"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                        if (ev.target?.result) {
+                          setLocalSettings({ ...localSettings, customLogoUrl: ev.target.result as string });
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="hidden"
+                />
+                <div className="flex flex-wrap gap-2">
+                  <label
+                    htmlFor="logo-file-input"
+                    className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#082d49] hover:bg-[#062035] text-white text-xs font-bold shadow-xs active:scale-95 transition-all"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{lang === 'es' ? 'Subir logotu.jpeg' : 'Upload logo file'}</span>
+                  </label>
+
+                  {localSettings.customLogoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setLocalSettings({ ...localSettings, customLogoUrl: undefined })}
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors"
+                    >
+                      {lang === 'es' ? 'Restablecer' : 'Reset'}
+                    </button>
+                  )}
+                </div>
+                <p className="text-[10px] text-slate-400">
+                  {lang === 'es'
+                    ? 'Selecciona tu archivo logotu.jpeg o PNG original para usarlo con 100% de fidelidad.'
+                    : 'Select your original logotu.jpeg or PNG file for 100% fidelity.'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Links (Instagram & Facebook) */}
+          <div className="p-3.5 rounded-2xl border border-slate-200 bg-white space-y-3">
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wide">
+              {lang === 'es' ? 'Redes Sociales Oficiales' : 'Official Social Links'}
+            </label>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                Instagram URL:
+              </label>
+              <input
+                type="url"
+                value={localSettings.instagramUrl || ''}
+                onChange={(e) => setLocalSettings({ ...localSettings, instagramUrl: e.target.value })}
+                placeholder="https://instagram.com/tulumunido"
+                className="w-full px-3 py-1.5 text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                Facebook URL:
+              </label>
+              <input
+                type="url"
+                value={localSettings.facebookUrl || ''}
+                onChange={(e) => setLocalSettings({ ...localSettings, facebookUrl: e.target.value })}
+                placeholder="https://facebook.com/tulumunido"
+                className="w-full px-3 py-1.5 text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
           </div>
 
           <div className="pt-2 flex justify-start">

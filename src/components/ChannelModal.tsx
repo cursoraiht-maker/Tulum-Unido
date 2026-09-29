@@ -63,7 +63,7 @@ export const ChannelModal: React.FC<ChannelModalProps> = ({
         {/* Header with channel color */}
         <div 
           className="relative px-6 pt-5 pb-6 text-white"
-          style={{ backgroundColor: channel.color }}
+          style={{ backgroundColor: channel.iconBgColor || '#0c2d48' }}
         >
           <button
             type="button"

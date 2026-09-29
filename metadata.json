@@ -1,6 +1,6 @@
 {
   "name": "Tulum Unido - Comunidad WhatsApp",
-  "description": "Tulum Unido es un grupo de ciudadanos reunidos en busca de un mejor Tulum. Directorio oficial de grupos de WhatsApp.",
+  "description": "Tulum Unido es un grupo de ciudadanos reunidos en busca de un mejor Tulum. Canales oficiales: Chat General, Vigilancia Ciudadana, Voluntarios Brigadas de Limpieza, Tulum United, Economía Circular y Comisiones de Trabajo.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
